@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Love Letters - A Collection of Hearts</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            line-height: 1.8;
+            color: #2c2c2c;
+            background: linear-gradient(135deg, #ffeef8 0%, #fff5f7 50%, #ffe8f0 100%);
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+            }
+            
+            .page-section {
+                page-break-after: always;
+                page-break-inside: avoid;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                padding: 2rem;
+            }
+            
+            .page-section:last-child {
+                page-break-after: auto;
+            }
+
+            .hero::before,
+            .scroll-indicator {
+                display: none;
+            }
+        }
+
+        /* Screen Styles */
+        @media screen {
+            .page-section {
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                padding: 4rem 2rem;
+                position: relative;
+            }
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(rgba(255, 182, 193, 0.3), rgba(255, 105, 180, 0.2)),
+                        url('https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=1600&q=80') center/cover;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(255, 182, 193, 0.3), transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(255, 105, 180, 0.2), transparent 50%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 1;
+            padding: 3rem;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(255, 105, 180, 0.3);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-content h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            color: #d64274;
+            margin-bottom: 2rem;
+            font-weight: 400;
+            letter-spacing: 3px;
+        }
+
+        .hero-quote {
+            font-size: clamp(1.1rem, 2vw, 1.4rem);
+            font-style: italic;
+            color: #8b4367;
+            line-height: 1.8;
+        }
+
+        .letter-container {
+            max-width: 800px;
+            width: 100%;
+            padding: 4rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(214, 66, 116, 0.2);
+            position: relative;
+        }
+
+        .letter-container::before {
+            content: '♥';
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2rem;
+            color: #ff69b4;
+            opacity: 0.3;
+        }
+
+        .letter-content {
+            font-size: 1rem;
+            line-height: 2;
+            color: #444;
+            text-align: left;
+            margin-top: 2rem;
+        }
+
+        .letter-content p {
+            margin-bottom: 2rem;
+            text-indent: 2rem;
+        }
+
+        .letter-content p:first-child {
+            text-indent: 0;
+            font-style: italic;
+            color: #8b4367;
+        }
+
+        .signature {
+            text-align: center;
+            font-style: italic;
+            color: #d64274;
+            margin-top: 3rem;
+            font-size: 1.2rem;
+            border-top: 2px solid rgba(255, 105, 180, 0.3);
+            padding-top: 2rem;
+        }
+
+        .quote-section {
+            max-width: 900px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .photo-frame {
+            position: relative;
+            margin-bottom: 3rem;
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Decorative Elements */
+        .floral-corner {
+            position: absolute;
+            font-size: 3rem;
+            opacity: 0.15;
+            color: #ff69b4;
+            z-index: 0;
+        }
+
+        .corner-tl { top: 20px; left: 20px; }
+        .corner-tr { top: 20px; right: 20px; transform: scaleX(-1); }
+        .corner-bl { bottom: 20px; left: 20px; transform: scaleY(-1); }
+        .corner-br { bottom: 20px; right: 20px; transform: scale(-1); }
+
+        .floating-petals {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .petal {
+            position: absolute;
+            font-size: 1.5rem;
+            opacity: 0.3;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        .petal:nth-child(1) { left: 10%; animation-delay: 0s; }
+        .petal:nth-child(2) { left: 25%; animation-delay: 2s; }
+        .petal:nth-child(3) { left: 40%; animation-delay: 4s; }
+        .petal:nth-child(4) { left: 60%; animation-delay: 1s; }
+        .petal:nth-child(5) { left: 75%; animation-delay: 3s; }
+        .petal:nth-child(6) { left: 85%; animation-delay: 5s; }
+
+        @keyframes float {
+            0% { 
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.3;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% { 
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .letter-container {
+            position: relative;
+        }
+
+        .letter-decoration {
+            position: absolute;
+            opacity: 0.1;
+            color: #ff69b4;
+        }
+
+        .branch-left {
+            font-size: 4rem;
+            left: -30px;
+            top: 50%;
+            transform: translateY(-50%) rotate(-15deg);
+        }
+
+        .branch-right {
+            font-size: 4rem;
+            right: -30px;
+            top: 50%;
+            transform: translateY(-50%) rotate(15deg) scaleX(-1);
+        }
+
+        .flower-top {
+            font-size: 2.5rem;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .rose-accent {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0.2;
+            animation: rotateRose 20s infinite linear;
+        }
+
+        @keyframes rotateRose {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .rose-1 { top: 10%; left: 5%; animation-delay: 0s; }
+        .rose-2 { top: 30%; right: 8%; animation-delay: 5s; }
+        .rose-3 { bottom: 20%; left: 10%; animation-delay: 10s; }
+        .rose-4 { bottom: 15%; right: 12%; animation-delay: 15s; }
+
+        .leaf-scatter {
+            position: absolute;
+            font-size: 1.5rem;
+            opacity: 0.15;
+            color: #8b4367;
+        }
+
+        .vine-decoration {
+            position: absolute;
+            width: 100%;
+            height: 60px;
+            bottom: 0;
+            left: 0;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 105, 180, 0.05) 25%, 
+                rgba(255, 105, 180, 0.1) 50%, 
+                rgba(255, 105, 180, 0.05) 75%, 
+                transparent 100%);
+            overflow: hidden;
+        }
+
+        .vine-decoration::before {
+            content: '🌿 ✿ 🌿 ✿ 🌿 ✿ 🌿 ✿ 🌿 ✿ 🌿 ✿ 🌿 ✿ 🌿';
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            font-size: 1.5rem;
+            opacity: 0.2;
+            animation: scrollVine 30s linear infinite;
+            white-space: nowrap;
+        }
+
+        @keyframes scrollVine {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+
+        .photo-frame img {
+            width: 100%;
+            max-width: 500px;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 20px;
+            box-shadow: 0 15px 50px rgba(214, 66, 116, 0.3);
+            border: 8px solid white;
+            outline: 2px solid rgba(255, 105, 180, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .photo-frame img:hover {
+            transform: scale(1.02);
+            box-shadow: 0 20px 60px rgba(214, 66, 116, 0.4);
+        }
+
+        .photo-frame::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% + 30px);
+            max-width: 530px;
+            height: calc(100% + 30px);
+            background: linear-gradient(135deg, rgba(255, 182, 193, 0.2), rgba(255, 105, 180, 0.2));
+            border-radius: 25px;
+            z-index: -1;
+            filter: blur(20px);
+        }
+
+        .quote-content {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 240, 245, 0.95));
+            padding: 3rem 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(214, 66, 116, 0.15);
+            margin: 3rem 0;
+            position: relative;
+        }
+
+        .quote-content::before,
+        .quote-content::after {
+            content: '"';
+            font-size: 5rem;
+            color: #ff69b4;
+            opacity: 0.2;
+            position: absolute;
+            font-family: Georgia, serif;
+        }
+
+        .quote-content::before {
+            top: -10px;
+            left: 20px;
+        }
+
+        .quote-content::after {
+            bottom: -40px;
+            right: 20px;
+        }
+
+        .quote-text {
+            font-size: clamp(1.1rem, 2vw, 1.5rem);
+            font-style: italic;
+            color: #8b4367;
+            line-height: 1.8;
+            position: relative;
+            z-index: 1;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-10px); }
+            60% { transform: translateX(-50%) translateY(-5px); }
+        }
+
+        .scroll-indicator::after {
+            content: '♥';
+            font-size: 2rem;
+            color: #ff69b4;
+        }
+
+        @media (max-width: 768px) {
+            .letter-container {
+                padding: 2.5rem 2rem;
+            }
+
+            .letter-content {
+                font-size: 1.1rem;
+            }
+
+            .quote-content {
+                padding: 2rem 1.5rem;
+            }
+
+            .photo-frame img {
+                height: 250px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-content {
+                padding: 2rem;
+            }
+
+            .letter-container {
+                padding: 2rem 1.5rem;
+            }
+
+            .photo-frame img {
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section class="hero page-section">
+        <div class="floating-petals">
+            <div class="petal">🌸</div>
+            <div class="petal">🌺</div>
+            <div class="petal">🌸</div>
+            <div class="petal">🌺</div>
+            <div class="petal">🌸</div>
+            <div class="petal">🌺</div>
+        </div>
+        <div class="hero-content">
+            <h1>Love Letters</h1>
+            <p class="hero-quote">In all the world, there is no heart for me like yours. In all the world, there is no love for you like mine.</p>
+        </div>
+        <div class="scroll-indicator"></div>
+    </section>
+
+    <section class="page-section">
+        <div class="letter-container">
+            <div class="floral-corner corner-tl">🌹</div>
+            <div class="floral-corner corner-tr">🌹</div>
+            <div class="floral-corner corner-bl">🌹</div>
+            <div class="floral-corner corner-br">🌹</div>
+            <div class="letter-decoration branch-left">🌿</div>
+            <div class="letter-decoration branch-right">🌿</div>
+            <div class="letter-decoration flower-top">🌸</div>
+            <div class="letter-content">
+                <p>My darling,</p>
+                <p>As I sit here under the moonlight, penning these words, I am overwhelmed by the depth of emotion that floods my heart. Every moment spent with you feels like a beautiful dream from which I never wish to awaken.</p>
+                <p>Your laughter is the melody that plays in my mind, your smile the light that guides me through the darkest of days. I find myself counting the minutes until I can see you again, hold your hand, and lose myself in your eyes.</p>
+                <p>You have become not just a part of my life, but the very essence of everything that makes life worth living. With you, even the simplest moments transform into precious memories that I will cherish forever.</p>
+                <p>Know that wherever you are, whatever you do, my heart is always with you, beating in harmony with yours.</p>
+            </div>
+            <p class="signature">Forever yours ♥</p>
+        </div>
+    </section>
+
+    <section class="page-section">
+        <div class="quote-section">
+            <div class="rose-accent rose-1">🌹</div>
+            <div class="rose-accent rose-2">🌹</div>
+            <div class="rose-accent rose-3">🌹</div>
+            <div class="rose-accent rose-4">🌹</div>
+            <div class="leaf-scatter" style="top: 15%; left: 15%;">🍃</div>
+            <div class="leaf-scatter" style="top: 25%; right: 20%;">🍃</div>
+            <div class="leaf-scatter" style="bottom: 25%; left: 18%;">🍃</div>
+            <div class="leaf-scatter" style="bottom: 35%; right: 15%;">🍃</div>
+            
+            <div class="photo-frame">
+                <img src="https://images.unsplash.com/photo-1518568814500-bf0f8d125f46?w=1000&q=80" alt="Our Love">
+            </div>
+            <div class="quote-content">
+                <p class="quote-text">I have waited for this opportunity for more than half a century, to repeat to you once again my vow of eternal fidelity and everlasting love.</p>
+            </div>
+            <div class="photo-frame">
+                <img src="https://images.unsplash.com/photo-1529634137978-8eb831d8ac6e?w=1000&q=80" alt="Together Forever">
+            </div>
+            <div class="vine-decoration"></div>
+        </div>
+    </section>
+
+    <section class="page-section">
+        <div class="letter-container">
+            <div class="floral-corner corner-tl">🌺</div>
+            <div class="floral-corner corner-tr">🌺</div>
+            <div class="floral-corner corner-bl">🌺</div>
+            <div class="floral-corner corner-br">🌺</div>
+            <div class="letter-decoration branch-left">🌿</div>
+            <div class="letter-decoration branch-right">🌿</div>
+            <div class="letter-decoration flower-top">💐</div>
+            <div class="letter-content">
+                <p>My beautiful soul,</p>
+                <p>Time seems to stand still when I'm with you, yet it flies by too quickly. Every sunrise reminds me of your radiant presence in my life, and every sunset carries the promise of another day to love you even more deeply than before.</p>
+                <p>You have taught me what it means to truly love and be loved in return. In your embrace, I have found my home, my peace, my everything. The world may change, seasons may pass, but my love for you remains constant, unwavering, eternal.</p>
+                <p>Thank you for being you, for choosing me, for making every day an adventure filled with love and laughter. You are my yesterday, my today, and all of my tomorrows.</p>
+            </div>
+            <p class="signature">With all my love ♥</p>
+        </div>
+    </section>
+
+    <section class="page-section">
+        <div class="quote-section">
+            <div class="rose-accent rose-1">🌸</div>
+            <div class="rose-accent rose-2">🌸</div>
+            <div class="rose-accent rose-3">🌸</div>
+            <div class="rose-accent rose-4">🌸</div>
+            <div class="leaf-scatter" style="top: 20%; left: 12%;">🌿</div>
+            <div class="leaf-scatter" style="top: 30%; right: 18%;">🌿</div>
+            <div class="leaf-scatter" style="bottom: 30%; left: 15%;">🌿</div>
+            <div class="leaf-scatter" style="bottom: 20%; right: 12%;">🌿</div>
+            
+            <div class="photo-frame">
+                <img src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=1000&q=80" alt="Our Moments">
+            </div>
+            <div class="quote-content">
+                <p class="quote-text">Love is composed of a single soul inhabiting two bodies.</p>
+            </div>
+            <div class="photo-frame">
+                <img src="https://images.unsplash.com/photo-1522673607217-f95e3e47c297?w=1000&q=80" alt="Hearts United">
+            </div>
+            <div class="vine-decoration"></div>
+        </div>
+    </section>
+
+    <section class="page-section">
+        <div class="letter-container">
+            <div class="letter-content">
+                <p>To the one I adore,</p>
+                <p>Words often fail to capture the magnitude of what I feel for you, but I must try. You are the poetry I could never write, the song I could never sing, the masterpiece I could never paint. Yet somehow, miraculously, you are mine, and I am yours.</p>
+                <p>In your eyes, I see my future. In your touch, I feel at home. In your love, I find the courage to be my truest self. You have awakened parts of my soul I never knew existed, and for that, I am eternally grateful.</p>
+                <p>Let us continue this beautiful journey together, hand in hand, heart to heart, through every season of life, forever and always.</p>
+            </div>
+            <p class="signature">Yours eternally ♥</p>
+        </div>
+    </section>
+</body>
+</html>
